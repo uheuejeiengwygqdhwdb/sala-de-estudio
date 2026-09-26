@@ -152,10 +152,23 @@ function toggleSubjectBtns(){
   document.getElementById("btnElec").classList.toggle("active", subject==="electricidad");
   document.getElementById("btnIngles").classList.toggle("active", subject==="ingles");
   fillTopics();
+  historial = []; // cambiar de materia empieza una clase nueva
 }
+topicSelect.addEventListener("change", ()=>{ historial = []; }); // cambiar de tema también reinicia la memoria de la clase
+
+// ---- API key: se guarda en este navegador para no perderla al refrescar ----
+const apiKeyInput = document.getElementById("apiKey");
+try{
+  const guardada = localStorage.getItem("gemini_api_key");
+  if (guardada) apiKeyInput.value = guardada;
+}catch(e){ /* si el navegador bloquea localStorage, simplemente no se recuerda */ }
+apiKeyInput.addEventListener("input", ()=>{
+  try{ localStorage.setItem("gemini_api_key", apiKeyInput.value.trim()); }catch(e){}
+});
 
 // ---- Escena: alternar entre avatar y pizarra ----
 let procesando = false;
+let historial = []; // memoria de la clase actual: se reinicia al cambiar de materia o de tema
 const sendBtn = document.getElementById("sendBtn");
 const avatarView = document.getElementById("avatarView");
 const boardView = document.getElementById("boardView");
@@ -305,7 +318,8 @@ Reglas:
 - Usa pasos "hablar" para explicar, saludar o conversar (el avatar se ve, la pizarra NO).
 - Usa un paso "pizarra" SOLO cuando haya un ejemplo concreto que valga mostrar (una fórmula, un cálculo paso a paso, una frase de ejemplo). Las "lineas" deben ser cortísimas (máx. 4-5 palabras cada una), nunca párrafos.
 - No repitas en "lineas" lo mismo que dices en "texto".
-- Usa entre 1 y 5 pasos en total, los que hagan falta para explicar bien sin relleno.`;
+- Usa entre 1 y 5 pasos en total, los que hagan falta para explicar bien sin relleno.
+- Tienes memoria de esta clase: recuerda lo que ya explicaste y lo que el estudiante ya practicó. NO reinicies el saludo ni repitas una explicación ya dada salvo que el estudiante lo pida explícitamente. Continúa la clase de forma natural, como un profesor real que lleva el hilo de la sesión.`;
 
   setStatus("Pensando...");
 
@@ -338,7 +352,7 @@ Reglas:
       method: "POST",
       headers: {"Content-Type":"application/json", "x-goog-api-key": key},
       body: JSON.stringify({
-        contents: [{ role:"user", parts:[{ text: pregunta }] }],
+        contents: [...historial, { role:"user", parts:[{ text: pregunta }] }],
         systemInstruction: { parts:[{ text: systemPrompt }] },
         generationConfig: { responseMimeType: "application/json" }
       })
@@ -363,6 +377,11 @@ Reglas:
     const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
     let parsed;
     try{ parsed = JSON.parse(raw); } catch(e){ parsed = { pasos: [{tipo:"hablar", texto: raw}] }; }
+
+    // Guardamos este intercambio en la memoria de la clase, acotando el tamaño para no crecer sin límite.
+    historial.push({ role:"user", parts:[{ text: pregunta }] });
+    historial.push({ role:"model", parts:[{ text: raw }] });
+    if (historial.length > 20) historial = historial.slice(-20);
 
     setStatus("");
     const pasos = parsed.pasos && parsed.pasos.length ? parsed.pasos : [{tipo:"hablar", texto:"No tengo una respuesta clara para eso, ¿puedes repetir la pregunta?"}];
@@ -428,15 +447,12 @@ micBtn.onclick = ()=>{
   recognition.start();
 };
 
-// ---- Pausa (voz + pizarra) ----
+// ---- Pausa (congela la pizarra; la voz sigue su curso, pausar/reanudar audio es poco confiable en Android) ----
 const pauseBtn = document.getElementById("pauseBtn");
 pauseBtn.onclick = ()=>{
   pausado = !pausado;
   pauseBtn.classList.toggle("paused", pausado);
   pauseBtn.textContent = pausado ? "▶" : "⏸";
-  try{
-    if (pausado) speechSynthesis.pause(); else speechSynthesis.resume();
-  }catch(e){ /* algunos navegadores móviles no soportan pausar la voz, pero la pizarra igual se detiene */ }
 };
 
 window.addEventListener("load", ()=>{
