@@ -61,27 +61,59 @@
   #sendBtn{ background:var(--ink); color:var(--paper); }
   #micBtn{ background:var(--paper-dark); border:1px solid #cfc4a4; }
   #micBtn.listening{ background:#c0553f; color:white; }
-  #pauseBtn{ background:var(--paper-dark); border:1px solid #cfc4a4; }
+  #pauseBtn{ background:var(--paper-dark); border:1px solid #cfc4a4; display:none; }
   #pauseBtn.paused{ background:#4a7a63; color:white; }
   .composer button:disabled{ opacity:.5; cursor:not-allowed; }
   .topic-picker{ padding:0 18px 8px; font-size:.85rem; color:var(--ink-soft); }
   .topic-picker select{ font-family:inherit; padding:4px 8px; border-radius:6px; border:1px solid #cfc4a4; }
+
+  /* ---- Selector de modo (Clase / Vocabulario) ---- */
+  .mode-toggle{ display:flex; gap:8px; padding:10px 20px; background:var(--paper-dark); border-bottom:1px solid #cfc4a4; }
+  .mode-toggle button{ font-family:inherit; padding:7px 16px; border-radius:20px; border:1px solid #cfc4a4; background:var(--paper); color:var(--ink-soft); cursor:pointer; font-weight:600; font-size:.9rem; }
+  .mode-toggle button.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  #claseWrap{ display:flex; flex-direction:column; flex:1; min-height:0; }
+
+  /* ---- Vocabulario (English Trainer) ---- */
+  #vocabSection{ display:none; background:#0d1117; color:#e6edf3; flex:1; overflow:auto; }
+  #vocabSection *{box-sizing:border-box}
+  #vocabSection .vocab-main{max-width:720px;margin:auto;padding:16px}
+  #vocabSection h2{margin:0;padding:16px 16px 0;font-size:20px;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+  #vocabSection .tabs{display:flex;gap:8px;overflow:auto;margin-bottom:14px}
+  #vocabSection button,#vocabSection select,#vocabSection input{font:inherit;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+  #vocabSection button{border:1px solid #303a4b;border-radius:12px;padding:12px 15px;background:#1a2330;color:#e6edf3;font-weight:700}
+  #vocabSection button.primary{background:#1769aa;color:#fff;border-color:#1769aa}
+  #vocabSection .tabs button.active{background:#1769aa;color:#fff;border-color:#1769aa}
+  #vocabSection .panel{display:none}#vocabSection .panel.active{display:block}
+  #vocabSection .card{background:#161b22;border:1px solid #303a4b;border-radius:20px;padding:28px 20px;min-height:260px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 5px 18px #0008}
+  #vocabSection .word{font-size:34px;font-weight:800}#vocabSection .meaning{font-size:23px;margin-top:14px;color:#58a6ff}#vocabSection .cat{margin-top:12px;color:#9da7b3}
+  #vocabSection .controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+  #vocabSection .progress{height:9px;background:#252d38;border-radius:9px;overflow:hidden;margin:12px 0}#vocabSection .bar{height:100%;background:#2f81f7;width:0}
+  #vocabSection .quizbox{background:#161b22;border:1px solid #303a4b;border-radius:18px;padding:20px;box-shadow:0 4px 15px #0008}#vocabSection .question{font-size:25px;font-weight:800;margin:10px 0 18px}
+  #vocabSection .options{display:grid;gap:10px}#vocabSection .options button{text-align:left;background:#1c2532}#vocabSection .correct{background:#183c29!important;border-color:#2ea043!important}#vocabSection .wrong{background:#4a2020!important;border-color:#f85149!important}
+  #vocabSection input{width:100%;padding:13px;border:2px solid #303a4b;border-radius:12px;background:#0d1117;color:#e6edf3;margin-bottom:8px}#vocabSection input::placeholder{color:#8b949e}
+  #vocabSection select{padding:11px;border:1px solid #303a4b;border-radius:12px;background:#161b22;color:#e6edf3;margin-bottom:8px}
+  #vocabSection .score{font-weight:800;margin:10px 0}#vocabSection .small{font-size:13px;color:#9da7b3}
+  #vocabSection .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}#vocabSection .stat{background:#161b22;border:1px solid #303a4b;padding:15px;border-radius:15px;text-align:center}#vocabSection .stat b{display:block;font-size:24px}
+  #vocabSection .list{display:grid;gap:8px}#vocabSection .item{background:#161b22;border:1px solid #303a4b;padding:13px;border-radius:12px;display:flex;justify-content:space-between;gap:10px}
+  #vocabSection .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Sala de Estudio Virtual</h1>
-  <div class="subject-toggle">
-    <button id="btnElec" class="active">Electricidad</button>
-    <button id="btnIngles">Inglés</button>
-  </div>
+  <h1>Sala de Estudio Virtual — Inglés</h1>
   <div class="key-row">
     <label for="apiKey">Gemini API key:</label>
     <input id="apiKey" type="password" placeholder="pega tu key aquí" autocomplete="off">
   </div>
 </header>
 
+<div class="mode-toggle">
+  <button id="modeClase" class="active">🎙️ Clase con profesor</button>
+  <button id="modeVocab">📚 Vocabulario</button>
+</div>
+
+<div id="claseWrap">
 <div class="topic-picker">
   Tema: <select id="topicSelect"></select>
 </div>
@@ -105,56 +137,96 @@
     <button id="pauseBtn" title="Pausar">⏸</button>
   </div>
 </main>
+</div><!-- /claseWrap -->
+
+<section id="vocabSection">
+<div class="vocab-main">
+<h2>🇺🇸 English Trainer — Vocabulario</h2>
+<div class="tabs">
+<button class="active" onclick="tab('cards',this)">🃏 Tarjetas</button>
+<button onclick="tab('quiz',this)">🎯 Quiz</button>
+<button onclick="tab('write',this)">✍️ Escribe</button>
+<button onclick="tab('list',this)">📚 Lista</button>
+</div>
+
+<section id="cards" class="panel active">
+<div class="row">
+<select id="cat" onchange="resetDeck()"><option value="All">Todas las categorías</option></select>
+<button onclick="shuffleDeck()">🔀 Mezclar</button>
+</div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="card" onclick="flip()">
+<div class="cat" id="cardCat"></div><div class="word" id="word"></div>
+<div class="meaning" id="meaning">Toca la tarjeta para ver la traducción</div>
+</div>
+<div class="controls">
+<button class="primary" onclick="speakCurrent()">🔊 Escuchar</button>
+<button onclick="next()">Siguiente →</button><button onclick="resetCycle()">🔄 Nuevo ciclo</button>
+</div>
+<p class="small" id="cycleStatus">Consejo: intenta decir la palabra en voz alta antes de tocar la tarjeta.</p>
+</section>
+
+<section id="quiz" class="panel">
+<div class="quizbox">
+<div class="score" id="score"></div>
+<div class="question" id="q"></div>
+<div class="options" id="opts"></div>
+</div>
+<div class="controls"><button class="primary" onclick="newQuiz()">Nueva pregunta</button><button onclick="speakQuiz()">🔊 Pronunciar</button></div>
+</section>
+
+<section id="write" class="panel">
+<div class="quizbox">
+<div class="small">Escribe la palabra en inglés:</div>
+<div class="question" id="wq"></div>
+<input id="answer" autocomplete="off" placeholder="Type the English word">
+<div class="controls"><button class="primary" onclick="checkWrite()">Comprobar</button><button onclick="speakWrite()">🔊 Pista</button></div>
+<div id="feedback"></div>
+</div>
+</section>
+
+<section id="list" class="panel">
+<div class="row"><input id="search" oninput="renderList()" placeholder="Buscar palabra...">
+<select id="listCat" onchange="renderList()"><option value="All">Todas</option></select></div>
+<div class="list" id="listBox"></div>
+</section>
+
+<div class="stats">
+<div class="stat"><b id="learned">0</b><span>aprendidas</span></div>
+<div class="stat"><b id="correct">0</b><span>aciertos</span></div>
+<div class="stat"><b id="total">0</b><span>palabras</span></div>
+</div>
+</div>
+</section>
 
 <script>
 const topics = {
-  electricidad: ["Ley de Ohm", "Circuitos en serie", "Circuitos en paralelo", "Potencia eléctrica", "Corriente alterna vs continua"],
-  ingles: {
-    "1. Fundamentos": ["Verb to be","Pronombres personales","Sujeto y objeto","Like","Presente simple","A / an / the","Preposiciones","Profesiones","Familia","Números","Fechas y horarios","Rutinas","Pronunciación básica"],
-    "2. Comunicación cotidiana": ["WH-questions","This / that / these / those","Presente simple: afirmativo, negativo e interrogativo","Like, love, enjoy, hate, don't like","Posesivos","Very / really","Presente continuo","Linking sounds","And / or / but"],
-    "3. Situaciones prácticas": ["Direcciones","Lugares de la ciudad","There is / there are","How much / how many","Contables e incontables","Some / any","More / less / fewer","Comida y bebidas","Precios y cantidades","Compras y servicios"],
-    "4. Pasado": ["Was / were","Past simple","Verbos regulares e irregulares","Did","Preguntas WH- en pasado","Past continuous","When / before / after / until / since","Reported speech","Narración de experiencias"],
-    "5. Intermedio": ["Comparativos y superlativos","Can / could / should / may / might","Will / be going to","Condicional cero","Primer condicional","Clima","Vacaciones y viajes","Planes y vida cotidiana"],
-    "6. Present perfect": ["Have you ever...?","Already / yet / just / never / ever","For / since","Present perfect vs. past simple","Present perfect continuous","Experiencias y pasado conectado con el presente"],
-    "7. Condicionales y narración": ["Second conditional","If I were...","I would...","Third conditional","Past perfect","Past perfect continuous","Used to","Situaciones hipotéticas","Narración de experiencias"],
-    "8. Comunicación B2": ["Reported speech avanzado","Relative clauses","Passive voice","Phrasal verbs","Collocations","Lenguaje laboral","Emails y documentos","Textos descriptivos, expositivos y periodísticos","Scanning y skimming","Conectores avanzados","Cortesía y formalidad","Preguntas indirectas","Argumentación"],
-    "9. Consolidación hacia B2": ["Modales avanzados","Reporting verbs","Infinitivos y gerundios","Mixed tenses","Relative y adverbial clauses","Condicionales avanzados","Expresar y justificar opiniones","Contraargumentar y comparar ideas","Temas sociales, ambientales y laborales","Tecnología, economía y educación","Pronunciación avanzada","Ritmo, entonación, blending y reducción de vocales","Conversaciones espontáneas"]
-  }
+  "1. Fundamentos": ["Verb to be","Pronombres personales","Sujeto y objeto","Like","Presente simple","A / an / the","Preposiciones","Profesiones","Familia","Números","Fechas y horarios","Rutinas","Pronunciación básica"],
+  "2. Comunicación cotidiana": ["WH-questions","This / that / these / those","Presente simple: afirmativo, negativo e interrogativo","Like, love, enjoy, hate, don't like","Posesivos","Very / really","Presente continuo","Linking sounds","And / or / but"],
+  "3. Situaciones prácticas": ["Direcciones","Lugares de la ciudad","There is / there are","How much / how many","Contables e incontables","Some / any","More / less / fewer","Comida y bebidas","Precios y cantidades","Compras y servicios"],
+  "4. Pasado": ["Was / were","Past simple","Verbos regulares e irregulares","Did","Preguntas WH- en pasado","Past continuous","When / before / after / until / since","Reported speech","Narración de experiencias"],
+  "5. Intermedio": ["Comparativos y superlativos","Can / could / should / may / might","Will / be going to","Condicional cero","Primer condicional","Clima","Vacaciones y viajes","Planes y vida cotidiana"],
+  "6. Present perfect": ["Have you ever...?","Already / yet / just / never / ever","For / since","Present perfect vs. past simple","Present perfect continuous","Experiencias y pasado conectado con el presente"],
+  "7. Condicionales y narración": ["Second conditional","If I were...","I would...","Third conditional","Past perfect","Past perfect continuous","Used to","Situaciones hipotéticas","Narración de experiencias"],
+  "8. Comunicación B2": ["Reported speech avanzado","Relative clauses","Passive voice","Phrasal verbs","Collocations","Lenguaje laboral","Emails y documentos","Textos descriptivos, expositivos y periodísticos","Scanning y skimming","Conectores avanzados","Cortesía y formalidad","Preguntas indirectas","Argumentación"],
+  "9. Consolidación hacia B2": ["Modales avanzados","Reporting verbs","Infinitivos y gerundios","Mixed tenses","Relative y adverbial clauses","Condicionales avanzados","Expresar y justificar opiniones","Contraargumentar y comparar ideas","Temas sociales, ambientales y laborales","Tecnología, economía y educación","Pronunciación avanzada","Ritmo, entonación, blending y reducción de vocales","Conversaciones espontáneas"]
 };
-let subject = "electricidad";
 const topicSelect = document.getElementById("topicSelect");
 function fillTopics(){
   topicSelect.innerHTML = "";
-  const t = topics[subject];
-  if (Array.isArray(t)){
-    t.forEach(tema=>{
+  Object.entries(topics).forEach(([modulo, temas])=>{
+    const grupo = document.createElement("optgroup");
+    grupo.label = modulo;
+    temas.forEach(tema=>{
       const o = document.createElement("option"); o.value = tema; o.textContent = tema;
-      topicSelect.appendChild(o);
+      grupo.appendChild(o);
     });
-  } else {
-    // Estructura con módulos (ej. inglés): usamos optgroup para mantener el orden del temario.
-    Object.entries(t).forEach(([modulo, temas])=>{
-      const grupo = document.createElement("optgroup");
-      grupo.label = modulo;
-      temas.forEach(tema=>{
-        const o = document.createElement("option"); o.value = tema; o.textContent = tema;
-        grupo.appendChild(o);
-      });
-      topicSelect.appendChild(grupo);
-    });
-  }
+    topicSelect.appendChild(grupo);
+  });
 }
 fillTopics();
 
-document.getElementById("btnElec").onclick = ()=>{ subject="electricidad"; toggleSubjectBtns(); };
-document.getElementById("btnIngles").onclick = ()=>{ subject="ingles"; toggleSubjectBtns(); };
-function toggleSubjectBtns(){
-  document.getElementById("btnElec").classList.toggle("active", subject==="electricidad");
-  document.getElementById("btnIngles").classList.toggle("active", subject==="ingles");
-  fillTopics();
-  historial = []; // cambiar de materia empieza una clase nueva
-}
-topicSelect.addEventListener("change", ()=>{ historial = []; }); // cambiar de tema también reinicia la memoria de la clase
+topicSelect.addEventListener("change", ()=>{ historial = []; }); // cambiar de tema reinicia la memoria de la clase
 
 // ---- API key: se guarda en este navegador para no perderla al refrescar ----
 const apiKeyInput = document.getElementById("apiKey");
@@ -172,8 +244,15 @@ let historial = []; // memoria de la clase actual: se reinicia al cambiar de mat
 const sendBtn = document.getElementById("sendBtn");
 const avatarView = document.getElementById("avatarView");
 const boardView = document.getElementById("boardView");
-function mostrarAvatar(){ boardView.classList.remove("active"); avatarView.classList.add("active"); }
-function mostrarPizarra(){ avatarView.classList.remove("active"); boardView.classList.add("active"); }
+function mostrarAvatar(){
+  boardView.classList.remove("active"); avatarView.classList.add("active");
+  pauseBtn.style.display = "none";
+  pausado = false; pauseBtn.classList.remove("paused"); pauseBtn.textContent = "⏸";
+}
+function mostrarPizarra(){
+  avatarView.classList.remove("active"); boardView.classList.add("active");
+  pauseBtn.style.display = "inline-block";
+}
 
 // ---- Pizarra (canvas) ----
 const canvas = document.getElementById("board");
@@ -304,9 +383,7 @@ Reglas de tu enseñanza:
 - Fomenta que el estudiante hable y practique en voz alta, no solo que escuche.
 - Sé exigente pero cálido, como un profesor universitario real: terminar el temario no significa dominar el idioma, lo que importa es el desempeño real en speaking, listening, reading y writing.`;
 
-  const rolElectricidad = `Eres un profesor virtual paciente y claro, especializado en electricidad residencial y comercial.`;
-
-  const systemPrompt = `${subject === "electricidad" ? rolElectricidad : rolIngles}
+  const systemPrompt = `${rolIngles}
 El estudiante está estudiando el tema: "${tema}".
 Responde SIEMPRE en este formato JSON estricto, sin texto adicional fuera del JSON:
 {"pasos": [
@@ -455,11 +532,58 @@ pauseBtn.onclick = ()=>{
   pauseBtn.textContent = pausado ? "▶" : "⏸";
 };
 
-window.addEventListener("load", ()=>{
-  resizeCanvas();
-  resizeWaveCanvas();
-  requestAnimationFrame(dibujarOndas);
-});
+// ---- Selector de modo: Clase con profesor / Vocabulario ----
+const modeClase = document.getElementById("modeClase");
+const modeVocab = document.getElementById("modeVocab");
+const claseWrap = document.getElementById("claseWrap");
+const vocabSection = document.getElementById("vocabSection");
+modeClase.onclick = ()=>{
+  modeClase.classList.add("active"); modeVocab.classList.remove("active");
+  claseWrap.style.display = "flex"; claseWrap.style.flexDirection = "column"; claseWrap.style.flex = "1"; claseWrap.style.minHeight = "0";
+  vocabSection.style.display = "none";
+};
+modeVocab.onclick = ()=>{
+  modeVocab.classList.add("active"); modeClase.classList.remove("active");
+  vocabSection.style.display = "flex"; vocabSection.style.flexDirection = "column";
+  claseWrap.style.display = "none";
+};
+
+// ---- Vocabulario (English Trainer) ----
+const words = [["rice", "arroz", "Food"], ["lentils", "lentejas", "Food"], ["beans", "frijoles", "Food"], ["chickpeas", "garbanzos", "Food"], ["corn", "maíz", "Food"], ["pasta", "pasta", "Food"], ["spaghetti", "espagueti", "Food"], ["noodles", "fideos", "Food"], ["lasagna", "lasaña", "Food"], ["vegetable oil", "aceite vegetal", "Food"], ["sunflower oil", "aceite de girasol", "Food"], ["olive oil", "aceite de oliva", "Food"], ["margarine", "margarina", "Food"], ["tomato sauce", "salsa de tomate", "Food"], ["mayonnaise", "mayonesa", "Food"], ["mustard", "mostaza", "Food"], ["soy sauce", "salsa de soya", "Food"], ["salt", "sal", "Food"], ["flour", "harina", "Food"], ["tuna", "atún", "Food"], ["sardines", "sardinas", "Food"], ["mushrooms", "champiñones", "Food"], ["milk", "leche", "Food"], ["yogurt", "yogur", "Food"], ["cheese", "queso", "Food"], ["butter", "mantequilla", "Food"], ["eggs", "huevos", "Food"], ["sausages", "salchichas", "Food"], ["ham", "jamón", "Food"], ["chorizo", "chorizo", "Food"], ["coffee", "café", "Food"], ["tea", "té", "Food"], ["water", "agua", "Food"], ["juice", "jugo", "Food"], ["potato chips", "papas fritas", "Food"], ["peanuts", "maní", "Food"], ["cookies", "galletas", "Food"], ["chocolate", "chocolate", "Food"], ["bread", "pan", "Food"], ["ice cream", "helado", "Food"], ["detergent", "detergente", "Home"], ["fabric softener", "suavizante", "Home"], ["dish soap", "lavaloza", "Home"], ["bleach", "blanqueador / límpido", "Home"], ["disinfectant", "desinfectante", "Home"], ["sponge", "esponja", "Home"], ["microfiber cloth", "paño de microfibra", "Home"], ["trash bag", "bolsa de basura", "Home"], ["broom", "escoba", "Home"], ["mop", "trapero", "Home"], ["toilet paper", "papel higiénico", "Home"], ["paper towel", "toalla de papel", "Home"], ["napkin", "servilleta", "Home"], ["shampoo", "champú", "Personal care"], ["conditioner", "acondicionador", "Personal care"], ["soap", "jabón", "Personal care"], ["moisturizer", "crema hidratante", "Personal care"], ["deodorant", "desodorante", "Personal care"], ["toothpaste", "crema dental", "Personal care"], ["toothbrush", "cepillo de dientes", "Personal care"], ["mouthwash", "enjuague bucal", "Personal care"], ["diapers", "pañales", "Personal care"], ["wet wipes", "pañitos húmedos", "Personal care"], ["blouse", "blusa", "Clothing"], ["shirt", "camisa", "Clothing"], ["T-shirt", "camiseta", "Clothing"], ["top", "top", "Clothing"], ["sweater", "suéter", "Clothing"], ["cardigan", "cárdigan", "Clothing"], ["hoodie", "buzo con capota", "Clothing"], ["jeans", "jeans", "Clothing"], ["trousers", "pantalones", "Clothing"], ["pants", "pantalones", "Clothing"], ["skirt", "falda", "Clothing"], ["shorts", "shorts", "Clothing"], ["dress", "vestido", "Clothing"], ["jumpsuit", "enterizo", "Clothing"], ["jacket", "chaqueta", "Clothing"], ["coat", "abrigo", "Clothing"], ["blazer", "blazer", "Clothing"], ["underwear", "ropa interior", "Clothing"], ["bra", "sostén / brasier", "Clothing"], ["pajamas", "pijamas", "Clothing"], ["sportswear", "ropa deportiva", "Clothing"], ["sneakers", "tenis", "Clothing"], ["sandals", "sandalias", "Clothing"], ["boots", "botas", "Clothing"], ["shoes", "zapatos", "Clothing"], ["belt", "cinturón", "Clothing"], ["house", "casa", "Everyday"], ["apartment", "apartamento", "Everyday"], ["room", "habitación", "Everyday"], ["kitchen", "cocina", "Everyday"], ["bathroom", "baño", "Everyday"], ["bedroom", "dormitorio", "Everyday"], ["door", "puerta", "Everyday"], ["window", "ventana", "Everyday"], ["table", "mesa", "Everyday"], ["chair", "silla", "Everyday"], ["bed", "cama", "Everyday"], ["key", "llave", "Everyday"], ["phone", "teléfono", "Everyday"], ["computer", "computador", "Everyday"], ["charger", "cargador", "Everyday"], ["wallet", "billetera", "Everyday"], ["money", "dinero", "Everyday"], ["bag", "bolso / bolsa", "Everyday"], ["backpack", "mochila", "Everyday"], ["car", "carro", "Everyday"], ["bus", "autobús", "Everyday"], ["motorcycle", "motocicleta", "Everyday"], ["bicycle", "bicicleta", "Everyday"], ["road", "carretera", "Everyday"], ["street", "calle", "City"], ["avenue", "avenida", "City"], ["corner", "esquina", "City"], ["traffic light", "semáforo", "City"], ["crosswalk", "paso peatonal", "City"], ["sidewalk", "acera", "City"], ["bridge", "puente", "City"], ["park", "parque", "City"], ["square", "plaza", "City"], ["downtown", "centro de la ciudad", "City"], ["neighborhood", "barrio", "City"], ["building", "edificio", "City"], ["store", "tienda", "City"], ["supermarket", "supermercado", "City"], ["mall", "centro comercial", "City"], ["market", "mercado", "City"], ["bakery", "panadería", "City"], ["restaurant", "restaurante", "City"], ["cafe", "cafetería", "City"], ["hospital", "hospital", "City"], ["pharmacy", "farmacia", "City"], ["school", "escuela", "City"], ["university", "universidad", "City"], ["bank", "banco", "City"], ["hotel", "hotel", "City"], ["airport", "aeropuerto", "City"], ["bus station", "terminal de buses", "City"], ["police station", "estación de policía", "City"], ["gas station", "gasolinera", "City"], ["post office", "oficina de correos", "City"], ["church", "iglesia", "City"], ["library", "biblioteca", "City"], ["gym", "gimnasio", "City"], ["beach", "playa", "Places"], ["mountain", "montaña", "Places"], ["river", "río", "Places"], ["lake", "lago", "Places"], ["country", "país", "Places"], ["city", "ciudad", "Places"], ["town", "pueblo", "Places"], ["north", "norte", "Directions"], ["south", "sur", "Directions"], ["east", "este", "Directions"], ["west", "oeste", "Directions"], ["left", "izquierda", "Directions"], ["right", "derecha", "Directions"], ["straight", "derecho / de frente", "Directions"], ["near", "cerca", "Directions"], ["far", "lejos", "Directions"], ["next to", "al lado de", "Directions"], ["in front of", "delante de", "Directions"], ["behind", "detrás de", "Directions"], ["between", "entre", "Directions"], ["across from", "enfrente de", "Directions"], ["here", "aquí", "Directions"], ["there", "allí / ahí", "Directions"], ["Colombia", "Colombia", "Countries"], ["United States", "Estados Unidos", "Countries"], ["Canada", "Canadá", "Countries"], ["Mexico", "México", "Countries"], ["Brazil", "Brasil", "Countries"], ["Argentina", "Argentina", "Countries"], ["Spain", "España", "Countries"], ["England", "Inglaterra", "Countries"], ["France", "Francia", "Countries"], ["Germany", "Alemania", "Countries"], ["Italy", "Italia", "Countries"], ["Japan", "Japón", "Countries"], ["China", "China", "Countries"], ["Australia", "Australia", "Countries"], ["ticket", "boleto / tiquete", "Travel"], ["passport", "pasaporte", "Travel"], ["suitcase", "maleta", "Travel"], ["trip", "viaje", "Travel"], ["map", "mapa", "Travel"], ["train", "tren", "Travel"], ["taxi", "taxi", "Travel"], ["station", "estación", "Travel"], ["entrance", "entrada", "Places"], ["exit", "salida", "Places"]];
+
+const STORAGE_KEY='englishTrainerProgressV2';
+let vocabState={cycle:0,seen:[],correct:0,extraWords:[]};
+let storageMode='none';
+try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){vocabState=Object.assign(vocabState,JSON.parse(raw));}storageMode='localStorage';}catch(e){try{const raw=sessionStorage.getItem(STORAGE_KEY);if(raw)vocabState=Object.assign(vocabState,JSON.parse(raw));storageMode='sessionStorage';}catch(e2){storageMode='memory';}}
+let deck=[...words], idx=0, flipped=false, quizItem=null, writeItem=null;
+const $=id=>document.getElementById(id);
+const cats=[...new Set(words.map(x=>x[2]))];
+cats.forEach(c=>{ $('cat').insertAdjacentHTML('beforeend',`<option>${c}</option>`); $('listCat').insertAdjacentHTML('beforeend',`<option>${c}</option>`);});
+$('total').textContent=words.length;
+function allWords(){return [...words,...(vocabState.extraWords||[])];}
+function saveVocab(){try{const data=JSON.stringify(vocabState);if(storageMode==='localStorage')localStorage.setItem(STORAGE_KEY,data);else if(storageMode==='sessionStorage')sessionStorage.setItem(STORAGE_KEY,data);updateStats();return true;}catch(e){updateStats();return false;}}
+function seenSet(){return new Set(vocabState.seen||[])}
+function currentPool(){const c=$('cat').value;return (c==='All'?allWords():allWords().filter(x=>x[2]===c));}
+function buildDeck(){const pool=currentPool();const seen=seenSet();let remaining=pool.filter(x=>!seen.has(x[0]));if(!remaining.length){if(pool.length){vocabState.cycle=(vocabState.cycle||0)+1;vocabState.seen=(vocabState.seen||[]).filter(w=>!pool.some(x=>x[0]===w));saveVocab();remaining=[...pool];}else remaining=[];}deck=remaining.sort(()=>Math.random()-.5);idx=0;flipped=false;renderCard();}
+function tab(id,btn){document.querySelectorAll('#vocabSection .panel').forEach(x=>x.classList.remove('active'));$(id).classList.add('panel','active');document.querySelectorAll('#vocabSection .tabs button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');if(id==='quiz')newQuiz();if(id==='write')newWrite();if(id==='list')renderList();}
+function current(){return deck[idx]}
+function renderCard(){if(!deck.length){$('word').textContent='🎉 ¡Ciclo completado!';$('meaning').textContent='Has visto todas las palabras. Pulsa "Nuevo ciclo" para empezar otra vez.';$('cardCat').textContent='';$('bar').style.width='100%';$('cycleStatus').textContent='Todas las palabras de este ciclo han sido mostradas.';return;}let x=current();$('word').textContent=x[0];$('meaning').textContent=flipped?x[1]:'Toca la tarjeta para ver la traducción';$('cardCat').textContent=x[2];let total=currentPool().length;let seenInPool=currentPool().filter(x=>seenSet().has(x[0])).length;$('bar').style.width=Math.min(100,(seenInPool/total)*100)+'%';$('cycleStatus').textContent=`Ciclo ${vocabState.cycle+1} · ${seenInPool} de ${total} palabras vistas`+(storageMode==='memory'?' · El navegador no permite guardar al cerrar.':'');}
+function flip(){flipped=!flipped;renderCard();}
+function next(){if(!deck.length){resetCycle();return;}let x=current();if(!vocabState.seen.includes(x[0]))vocabState.seen.push(x[0]);saveVocab();idx++;flipped=false;if(idx>=deck.length){buildDeck();}else renderCard();}
+function resetCycle(){const pool=currentPool();vocabState.seen=vocabState.seen.filter(w=>!pool.some(x=>x[0]===w));saveVocab();buildDeck();}
+function resetDeck(){buildDeck()}
+function shuffleDeck(){deck.sort(()=>Math.random()-.5);idx=0;flipped=false;renderCard()}
+function speakVocab(text){if('speechSynthesis' in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.82;speechSynthesis.speak(u)}}
+function speakCurrent(){if(current())speakVocab(current()[0])}
+function updateStats(){$('learned').textContent=(vocabState.seen||[]).length;$('correct').textContent=vocabState.correct||0;$('total').textContent=allWords().length}
+function newQuiz(){const pool=allWords();quizItem=pool[Math.floor(Math.random()*pool.length)];$('q').textContent=quizItem[1];$('score').textContent='Aciertos: '+(vocabState.correct||0);let opts=pool.filter(x=>x[0]!==quizItem[0]).sort(()=>Math.random()-.5).slice(0,3);opts=[quizItem,...opts].sort(()=>Math.random()-.5);$('opts').innerHTML='';opts.forEach(x=>{let b=document.createElement('button');b.textContent=x[0];b.onclick=()=>answerQuiz(b,x);$('opts').appendChild(b)})}
+function answerQuiz(btn,x){document.querySelectorAll('#opts button').forEach(b=>b.disabled=true);if(x[0]===quizItem[0]){btn.classList.add('correct');vocabState.correct=(vocabState.correct||0)+1;saveVocab();}else{btn.classList.add('wrong');document.querySelectorAll('#opts button').forEach(b=>{if(b.textContent===quizItem[0])b.classList.add('correct')})} }
+function speakQuiz(){if(quizItem)speakVocab(quizItem[0])}
+function newWrite(){const pool=allWords();writeItem=pool[Math.floor(Math.random()*pool.length)];$('wq').textContent=writeItem[1];$('answer').value='';$('feedback').textContent=''}
+function checkWrite(){let a=$('answer').value.trim().toLowerCase();let good=writeItem[0].toLowerCase();if(a===good){$('feedback').innerHTML='<span style="color:#3fb950;font-weight:800">✅ Correct!</span>';vocabState.correct=(vocabState.correct||0)+1;saveVocab();setTimeout(newWrite,800)}else{$('feedback').innerHTML='<span style="color:#ff7b72;font-weight:800">❌ Try again. Correct answer: '+writeItem[0]+'</span>'}}
+function speakWrite(){if(writeItem)speakVocab(writeItem[0])}
+function renderList(){let q=$('search').value.toLowerCase(),c=$('listCat').value;let arr=allWords().filter(x=>(c==='All'||x[2]===c)&&(!q||x[0].toLowerCase().includes(q)||x[1].toLowerCase().includes(q)));$('listBox').innerHTML=arr.map(x=>`<div class="item"><span><b>${x[0]}</b><br><span class="small">${x[2]}</span></span><span>${x[1]} <button onclick="speakVocab('${x[0].replace(/'/g,"\\'")}')">🔊</button></span></div>`).join('')}
+updateStats();buildDeck();renderList();
 </script>
 </body>
 </html>
