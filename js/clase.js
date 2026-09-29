@@ -146,11 +146,24 @@ function dibujarOndas(t){
   requestAnimationFrame(dibujarOndas);
 }
 
+// ============ Velocidad de la voz (control real, no depende de lo que le pidamos a Gemini) ============
+const velocidadSelect = document.getElementById("velocidadSelect");
+let velocidadHabla = 0.8;
+try{
+  const guardadaVel = localStorage.getItem("velocidad_habla");
+  if (guardadaVel){ velocidadHabla = parseFloat(guardadaVel); velocidadSelect.value = guardadaVel; }
+}catch(e){}
+velocidadSelect.addEventListener("change", ()=>{
+  velocidadHabla = parseFloat(velocidadSelect.value);
+  try{ localStorage.setItem("velocidad_habla", velocidadSelect.value); }catch(e){}
+});
+
 function speak(text){
   return new Promise(resolve=>{
     try{
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "es-419";
+      u.rate = velocidadHabla;
       u.onstart = ()=> { hablando = true; };
       u.onend = ()=> { hablando = false; resolve(); };
       u.onerror = ()=> { hablando = false; resolve(); };
