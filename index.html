@@ -13,12 +13,20 @@
   <div class="key-row">
     <label for="apiKey">Gemini API key:</label>
     <input id="apiKey" type="password" placeholder="pega tu key aquí" autocomplete="off">
+    <label for="velocidadSelect">Velocidad:</label>
+    <select id="velocidadSelect">
+      <option value="0.65">🐢 Muy lento</option>
+      <option value="0.8" selected>🙂 Lento (recomendado)</option>
+      <option value="1">▶ Normal</option>
+      <option value="1.15">⏩ Rápido</option>
+    </select>
   </div>
 </header>
 
 <div class="mode-toggle">
   <button id="modeClase" class="active">🎙️ Clase con profesor</button>
   <button id="modeVocab">📚 Vocabulario</button>
+  <button id="modeDispara">🎯 Dispara la respuesta</button>
 </div>
 
 <div id="claseWrap">
@@ -107,8 +115,40 @@
 </div>
 </section>
 
+<section id="disparaSection">
+  <div class="d-wrap" id="dSetup">
+    <h2>🎯 Dispara la respuesta</h2>
+    <p class="small">Aparece una palabra en español y 5 burbujas moviéndose con posibles traducciones. Toca la correcta antes de que se acabe el tiempo.</p>
+    <p class="small">Selecciona el tiempo:</p>
+    <div class="d-time-opts">
+      <button class="d-time active" data-t="180">⏱ 3 minutos</button>
+      <button class="d-time" data-t="300">⏱ 5 minutos</button>
+    </div>
+    <button id="dStart" class="primary">▶ Comenzar</button>
+  </div>
+
+  <div class="d-wrap d-game" id="dGame" style="display:none">
+    <div class="d-hud">
+      <span id="dTimer">03:00</span>
+      <span id="dWordEs">—</span>
+      <span id="dScoreLine">✅ 0 ❌ 0</span>
+    </div>
+    <div class="d-arena" id="dArena">
+      <div class="d-tank">🛡️</div>
+    </div>
+  </div>
+
+  <div class="d-wrap" id="dResult" style="display:none">
+    <h2>🏆 Resultado</h2>
+    <div id="dResultSummary"></div>
+    <div id="dResultList"></div>
+    <button id="dPlayAgain" class="primary">🔄 Jugar de nuevo</button>
+  </div>
+</section>
+
 <script src="js/clase.js"></script>
 <script src="js/vocabulario.js"></script>
+<script src="js/juego-dispara.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
