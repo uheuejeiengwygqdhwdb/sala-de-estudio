@@ -5,6 +5,8 @@
   const gameEl = document.getElementById("dGame");
   const resultEl = document.getElementById("dResult");
   const arena = document.getElementById("dArena");
+  const tankEl = document.getElementById("dTank");
+  const barrelEl = document.getElementById("dBarrel");
   const timerEl = document.getElementById("dTimer");
   const wordEsEl = document.getElementById("dWordEs");
   const scoreLineEl = document.getElementById("dScoreLine");
@@ -58,6 +60,9 @@
     const opciones = [actual, ...distractores].sort(()=>Math.random()-.5);
 
     arena.querySelectorAll(".d-bubble").forEach(b=>b.remove());
+    // Carriles fijos (posición base) para que las 5 burbujas nunca arranquen encimadas.
+    const carrilesX = [14, 32, 50, 68, 86];
+    const carrilesY = [18, 36, 55, 36, 18];
     bubbles = opciones.map((op, i)=>{
       const div = document.createElement("div");
       div.className = "d-bubble";
@@ -66,19 +71,19 @@
       arena.appendChild(div);
       return {
         el: div,
-        baseX: 12 + i*19,
-        baseY: 18 + Math.random()*45,
+        baseX: carrilesX[i],
+        baseY: carrilesY[i],
         fase: Math.random()*10,
-        freqX: 0.35 + Math.random()*0.25,
-        freqY: 0.3 + Math.random()*0.25
+        freqX: 0.5 + Math.random()*0.3,
+        freqY: 0.45 + Math.random()*0.3
       };
     });
   }
 
   function animar(t){
     bubbles.forEach(b=>{
-      const x = b.baseX + Math.sin(t*0.0006*b.freqX + b.fase) * 7;
-      const y = b.baseY + Math.cos(t*0.0005*b.freqY + b.fase) * 7;
+      const x = b.baseX + Math.sin(t*0.0011*b.freqX + b.fase) * 8;
+      const y = b.baseY + Math.cos(t*0.0009*b.freqY + b.fase) * 8;
       b.el.style.left = x + "%";
       b.el.style.top = y + "%";
     });
@@ -86,18 +91,46 @@
   }
 
   function disparar(div, opcion){
-    if (div.classList.contains("d-correct") || div.classList.contains("d-wrong")) return;
-    if (opcion[0] === actual[0]){
-      div.classList.add("d-correct");
-      correctas++;
-      setTimeout(nuevaRonda, 300);
-    } else {
-      div.classList.add("d-wrong");
-      fallidas++;
-      fallosList.push({ es: actual[1], tuya: opcion[0], correcta: actual[0] });
-      setTimeout(()=> div.classList.remove("d-wrong"), 400);
-    }
-    actualizarHud();
+    if (div.classList.contains("d-correct") || div.classList.contains("d-wrong") || div.dataset.bloqueada === "1") return;
+    div.dataset.bloqueada = "1"; // evita doble clic mientras viaja el proyectil
+    const esCorrecta = opcion[0] === actual[0];
+
+    const arenaRect = arena.getBoundingClientRect();
+    const tankRect = tankEl.getBoundingClientRect();
+    const bubbleRect = div.getBoundingClientRect();
+    const startX = tankRect.left + tankRect.width/2 - arenaRect.left;
+    const startY = tankRect.top - arenaRect.top;
+    const endX = bubbleRect.left + bubbleRect.width/2 - arenaRect.left;
+    const endY = bubbleRect.top + bubbleRect.height/2 - arenaRect.top;
+
+    // el cañón gira para apuntar hacia la burbuja antes de disparar
+    const angulo = Math.atan2(endX - startX, -(endY - startY)) * (180/Math.PI);
+    barrelEl.style.transform = `translateX(-50%) rotate(${angulo}deg)`;
+
+    const bala = document.createElement("div");
+    bala.className = "d-bala";
+    bala.style.left = startX + "px";
+    bala.style.top = startY + "px";
+    arena.appendChild(bala);
+    requestAnimationFrame(()=>{
+      bala.style.left = endX + "px";
+      bala.style.top = endY + "px";
+    });
+
+    setTimeout(()=>{
+      bala.remove();
+      if (esCorrecta){
+        div.classList.add("d-correct");
+        correctas++;
+        setTimeout(nuevaRonda, 300);
+      } else {
+        div.classList.add("d-wrong");
+        fallidas++;
+        fallosList.push({ es: actual[1], tuya: opcion[0], correcta: actual[0] });
+        setTimeout(()=>{ div.classList.remove("d-wrong"); div.dataset.bloqueada = ""; }, 400);
+      }
+      actualizarHud();
+    }, 170);
   }
 
   function terminarPartida(){
