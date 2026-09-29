@@ -66,13 +66,23 @@ canvas{ width:100%; height:100%; display:block; }
 .d-time-opts button.active{ background:#1769aa; border-color:#1769aa; }
 #dStart, #dPlayAgain{ background:#1769aa; border-color:#1769aa; margin-top:10px; }
 .d-game{ max-width:900px; }
-.d-hud{ display:flex; justify-content:space-between; align-items:center; padding:0 6px 12px; font-weight:800; font-size:1.05rem; }
+.d-hud{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:6px 14px; padding:0 6px 12px; font-weight:800; font-size:1rem; }
 .d-arena{ position:relative; height:380px; background:#161b22; border:1px solid #303a4b; border-radius:16px; overflow:hidden; }
-.d-tank{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-size:2.2rem; }
+.d-tank{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:64px; height:60px; }
+.d-tank-body{ position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:56px; height:26px; background:#3a7d44; border:2px solid #2a5c32; border-radius:8px 8px 4px 4px; }
+.d-tank-body::before{ content:""; position:absolute; bottom:-6px; left:-4px; right:-4px; height:8px; background:#22321f; border-radius:4px; }
+.d-tank-barrel{
+  position:absolute; bottom:22px; left:50%; width:6px; height:30px; background:#2a5c32; border-radius:3px;
+  transform-origin:bottom center; transform:translateX(-50%) rotate(0deg); transition:transform .12s ease;
+}
+.d-bala{
+  position:absolute; width:8px; height:8px; border-radius:50%; background:#ffdd55; box-shadow:0 0 8px 2px #ffdd55aa;
+  transform:translate(-50%,-50%); pointer-events:none; transition:left .16s linear, top .16s linear;
+}
 .d-bubble{
-  position:absolute; transform:translate(-50%,-50%); padding:10px 16px; border-radius:20px;
+  position:absolute; transform:translate(-50%,-50%); padding:8px 14px; border-radius:20px;
   background:#1c2532; border:1px solid #3a4a63; font-weight:700; cursor:pointer; user-select:none;
-  transition:background .15s, border-color .15s;
+  transition:background .15s, border-color .15s; white-space:nowrap; font-size:.95rem;
 }
 .d-bubble.d-correct{ background:#183c29; border-color:#2ea043; }
 .d-bubble.d-wrong{ background:#4a2020; border-color:#f85149; }
@@ -80,6 +90,22 @@ canvas{ width:100%; height:100%; display:block; }
 .d-stat{ background:#161b22; border:1px solid #303a4b; border-radius:15px; padding:14px; }
 .d-stat b{ display:block; font-size:22px; margin-top:4px; }
 .d-fallo{ background:#161b22; border:1px solid #303a4b; border-radius:10px; padding:10px; margin:6px 0; text-align:left; font-size:.9rem; }
+
+/* ---- Responsive: celular (la mayoría de las entradas son desde aquí) ---- */
+@media (max-width: 640px){
+  header{ padding:10px 12px; gap:8px; }
+  header h1{ font-size:1rem; width:100%; }
+  .key-row{ margin-left:0; width:100%; flex-wrap:wrap; gap:6px 10px; }
+  .key-row input{ width:150px; }
+  .mode-toggle{ padding:8px 10px; gap:6px; overflow-x:auto; }
+  .mode-toggle button{ padding:8px 12px; font-size:.8rem; white-space:nowrap; flex:none; }
+  .topic-picker{ font-size:.8rem; }
+  .wave-circle{ width:200px; height:200px; }
+  .d-wrap{ padding:14px 10px; }
+  .d-hud{ font-size:.85rem; gap:4px 10px; }
+  .d-arena{ height:320px; }
+  .d-bubble{ padding:7px 11px; font-size:.85rem; }
+}
 
 /* ---- Selector de modo (Clase / Vocabulario) ---- */
 .mode-toggle{ display:flex; gap:8px; padding:10px 20px; background:var(--paper-dark); border-bottom:1px solid #cfc4a4; }
