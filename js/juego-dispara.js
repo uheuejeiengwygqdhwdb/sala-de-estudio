@@ -49,6 +49,16 @@
     }catch(e){}
   };
 
+  function speakIngles(texto){
+    try{
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(texto);
+      u.lang = "en-US";
+      u.rate = 0.9;
+      speechSynthesis.speak(u);
+    }catch(e){}
+  }
+
   function iniciarPartida(){
     document.body.classList.add("dispara-fullscreen"); // el juego ocupa toda la pantalla mientras se juega
     jugPausado = false;
@@ -148,6 +158,7 @@
       if (esCorrecta){
         div.classList.add("d-correct");
         correctas++;
+        speakIngles(opcion[0]);
         setTimeout(nuevaRonda, 300);
       } else {
         div.classList.add("d-wrong");
