@@ -39,17 +39,16 @@ apiKeyInput.addEventListener("input", ()=>{
 // ============ Escena: alternar entre avatar y pizarra ============
 let procesando = false;
 let historial = []; // memoria de la clase actual: se reinicia al cambiar de tema
+let turnId = 0; // identifica cada respuesta; permite que una pregunta nueva interrumpa una espera anterior
+let resolverContinuar = null; // resuelve cuando el estudiante toca "Continuar" entre dos pasos de una misma respuesta
 const sendBtn = document.getElementById("sendBtn");
 const avatarView = document.getElementById("avatarView");
 const boardView = document.getElementById("boardView");
 function mostrarAvatar(){
   boardView.classList.remove("active"); avatarView.classList.add("active");
-  pauseBtn.style.display = "none";
-  pausado = false; pauseBtn.classList.remove("paused"); pauseBtn.textContent = "⏸";
 }
 function mostrarPizarra(){
   avatarView.classList.remove("active"); boardView.classList.add("active");
-  pauseBtn.style.display = "inline-block";
 }
 
 // ============ Pizarra (canvas) ============
@@ -69,7 +68,6 @@ function clearBoard(){
 }
 
 let boardY = 40;
-let pausado = false;
 function writeLine(text){
   return new Promise(resolve=>{
     ctx.font = "28px 'Comic Sans MS', cursive";
@@ -83,7 +81,6 @@ function writeLine(text){
     let i = 0;
     const x = 30;
     function step(){
-      if (pausado){ setTimeout(step, 150); return; } // en pausa, no avanza hasta que se reanude
       if (i <= text.length){
         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--board-bg');
         ctx.fillRect(x, boardY, canvas.clientWidth - 60, 36);
@@ -180,6 +177,8 @@ async function askProfesor(pregunta){
     setStatus("Falta pegar tu API key de Gemini arriba.");
     return;
   }
+  const miTurno = ++turnId;
+  if (resolverContinuar){ const r = resolverContinuar; resolverContinuar = null; pauseBtn.style.display = "none"; r(); } // una pregunta nueva corta cualquier espera anterior
   procesando = true;
   micBtn.disabled = true;
   sendBtn.disabled = true;
@@ -275,7 +274,9 @@ Reglas:
     setStatus("");
     const pasos = parsed.pasos && parsed.pasos.length ? parsed.pasos : [{tipo:"hablar", texto:"No tengo una respuesta clara para eso, ¿puedes repetir la pregunta?"}];
 
-    for (const paso of pasos){
+    for (let i = 0; i < pasos.length; i++){
+      if (turnId !== miTurno) return; // llegó una pregunta nueva mientras esperábamos; abandonamos esta secuencia vieja
+      const paso = pasos[i];
       if (paso.tipo === "pizarra"){
         mostrarPizarra();
         clearBoard();
@@ -285,6 +286,21 @@ Reglas:
           await writeLine(linea);
         }
         await narracion;
+
+        const esUltimoPaso = i === pasos.length - 1;
+        if (!esUltimoPaso){
+          // Damos tiempo real para pensar: liberamos el micrófono y esperamos a que el estudiante
+          // toque "Continuar" (o haga una pregunta nueva, que interrumpe esta espera).
+          procesando = false; micBtn.disabled = false; sendBtn.disabled = false;
+          await new Promise(resolve=>{
+            resolverContinuar = resolve;
+            pauseBtn.style.display = "inline-block";
+            pauseBtn.textContent = "▶ Continuar";
+            pauseBtn.classList.add("paused");
+          });
+          if (turnId !== miTurno) return;
+          procesando = true; micBtn.disabled = true; sendBtn.disabled = true;
+        }
       } else {
         mostrarAvatar();
         await speak(paso.texto || "");
@@ -295,9 +311,11 @@ Reglas:
   }catch(e){
     setStatus("No se pudo conectar con Gemini: " + e.message);
   } finally {
-    procesando = false;
-    micBtn.disabled = false;
-    sendBtn.disabled = false;
+    if (turnId === miTurno){ // solo si esta sigue siendo la conversación activa (no fue reemplazada por una nueva)
+      procesando = false;
+      micBtn.disabled = false;
+      sendBtn.disabled = false;
+    }
   }
 }
 
@@ -337,12 +355,16 @@ micBtn.onclick = ()=>{
   recognition.start();
 };
 
-// ============ Pausa (congela la pizarra; la voz sigue su curso — pausar/reanudar audio es poco confiable en Android) ============
+// ============ Botón "Continuar" (avanza al siguiente paso de la explicación cuando el estudiante ya está listo) ============
 const pauseBtn = document.getElementById("pauseBtn");
 pauseBtn.onclick = ()=>{
-  pausado = !pausado;
-  pauseBtn.classList.toggle("paused", pausado);
-  pauseBtn.textContent = pausado ? "▶" : "⏸";
+  if (resolverContinuar){
+    const r = resolverContinuar;
+    resolverContinuar = null;
+    pauseBtn.classList.remove("paused");
+    pauseBtn.style.display = "none";
+    r();
+  }
 };
 
 // ============ Arranque ============
