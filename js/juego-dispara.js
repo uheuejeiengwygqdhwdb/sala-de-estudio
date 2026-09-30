@@ -28,14 +28,22 @@
     resultEl.style.display = "none";
     setupEl.style.display = "block";
   };
+  document.getElementById("dExit").onclick = ()=>{
+    clearInterval(timerInterval);
+    cancelAnimationFrame(animId);
+    document.body.classList.remove("dispara-fullscreen");
+    gameEl.style.display = "none";
+    setupEl.style.display = "block";
+  };
 
   function iniciarPartida(){
+    document.body.classList.add("dispara-fullscreen"); // el juego ocupa toda la pantalla mientras se juega
     pool = [...words].sort(()=>Math.random()-.5); // orden aleatorio: no se repiten palabras dentro de la partida
     correctas = 0; fallidas = 0; fallosList = [];
     tiempoRestante = tiempoElegido;
     setupEl.style.display = "none";
     resultEl.style.display = "none";
-    gameEl.style.display = "block";
+    gameEl.style.display = "flex";
     actualizarHud();
     timerInterval = setInterval(()=>{
       tiempoRestante--;
@@ -136,6 +144,7 @@
   function terminarPartida(){
     clearInterval(timerInterval);
     cancelAnimationFrame(animId);
+    document.body.classList.remove("dispara-fullscreen");
     gameEl.style.display = "none";
     resultEl.style.display = "block";
     document.getElementById("dResultSummary").innerHTML =
