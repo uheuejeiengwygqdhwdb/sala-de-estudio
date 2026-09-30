@@ -21,7 +21,7 @@
   });
 
   let pool = [], actual = null, correctas = 0, fallidas = 0, fallosList = [];
-  let tiempoRestante = 0, timerInterval = null, animId = null, bubbles = [];
+  let tiempoRestante = 0, timerInterval = null, animId = null, bubbles = [], jugPausado = false;
 
   document.getElementById("dStart").onclick = iniciarPartida;
   document.getElementById("dPlayAgain").onclick = ()=>{
@@ -35,9 +35,24 @@
     gameEl.style.display = "none";
     setupEl.style.display = "block";
   };
+  document.getElementById("dPauseBtn").onclick = (e)=>{
+    jugPausado = !jugPausado;
+    e.target.textContent = jugPausado ? "▶" : "⏸";
+  };
+  document.getElementById("dSpeak").onclick = ()=>{
+    if (!actual) return;
+    try{
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(actual[1]);
+      u.lang = "es-419";
+      speechSynthesis.speak(u);
+    }catch(e){}
+  };
 
   function iniciarPartida(){
     document.body.classList.add("dispara-fullscreen"); // el juego ocupa toda la pantalla mientras se juega
+    jugPausado = false;
+    document.getElementById("dPauseBtn").textContent = "⏸";
     pool = [...words].sort(()=>Math.random()-.5); // orden aleatorio: no se repiten palabras dentro de la partida
     correctas = 0; fallidas = 0; fallosList = [];
     tiempoRestante = tiempoElegido;
@@ -46,6 +61,7 @@
     gameEl.style.display = "flex";
     actualizarHud();
     timerInterval = setInterval(()=>{
+      if (jugPausado) return;
       tiempoRestante--;
       actualizarHud();
       if (tiempoRestante <= 0) terminarPartida();
@@ -89,12 +105,14 @@
   }
 
   function animar(t){
-    bubbles.forEach(b=>{
-      const x = b.baseX + Math.sin(t*0.0011*b.freqX + b.fase) * 8;
-      const y = b.baseY + Math.cos(t*0.0009*b.freqY + b.fase) * 8;
-      b.el.style.left = x + "%";
-      b.el.style.top = y + "%";
-    });
+    if (!jugPausado){
+      bubbles.forEach(b=>{
+        const x = b.baseX + Math.sin(t*0.0011*b.freqX + b.fase) * 8;
+        const y = b.baseY + Math.cos(t*0.0009*b.freqY + b.fase) * 8;
+        b.el.style.left = x + "%";
+        b.el.style.top = y + "%";
+      });
+    }
     animId = requestAnimationFrame(animar);
   }
 
