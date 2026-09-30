@@ -66,36 +66,103 @@ canvas{ width:100%; height:100%; display:block; }
 .d-time-opts button.active{ background:#1769aa; border-color:#1769aa; }
 #dStart, #dPlayAgain{ background:#1769aa; border-color:#1769aa; margin-top:10px; }
 .d-wrap.d-game{ max-width:none; width:100%; height:100%; display:flex; flex-direction:column; padding:12px; }
-.d-hud{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:6px 14px; padding:0 6px 12px; font-weight:800; font-size:1rem; }
-.d-exit{ background:#2a1418; border:1px solid #5a2a30; color:#ff9d9d; border-radius:8px; padding:4px 10px; font-weight:800; cursor:pointer; }
-.d-arena{ position:relative; flex:1; min-height:0; background:#161b22; border:1px solid #303a4b; border-radius:16px; overflow:hidden; }
+
+.d-topbar{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:#101a33; border:1px solid #2a3a63; border-radius:16px; padding:8px 12px; margin-bottom:10px;
+}
+.d-topbar-title{ font-weight:800; font-size:1rem; }
+.d-icon-btn{
+  background:#16223f; border:1px solid #2a3a63; color:#e6edf3; border-radius:12px;
+  width:38px; height:38px; font-size:1.1rem; font-weight:800; cursor:pointer;
+}
+
+.d-arena{
+  position:relative; flex:1; min-height:0; overflow:hidden; border-radius:20px;
+  background:
+    radial-gradient(2px 2px at 12% 18%, #fff 0 100%, transparent 60%),
+    radial-gradient(2px 2px at 30% 10%, #fff 0 100%, transparent 60%),
+    radial-gradient(1.5px 1.5px at 50% 22%, #fff 0 100%, transparent 60%),
+    radial-gradient(2px 2px at 70% 14%, #fff 0 100%, transparent 60%),
+    radial-gradient(1.5px 1.5px at 85% 25%, #fff 0 100%, transparent 60%),
+    radial-gradient(2px 2px at 20% 40%, #fff 0 100%, transparent 60%),
+    radial-gradient(1.5px 1.5px at 92% 45%, #fff 0 100%, transparent 60%),
+    linear-gradient(180deg, #060a1c 0%, #0d1338 45%, #2a123f 78%, #4a1a3a 100%);
+}
+.d-arena::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:22%; pointer-events:none;
+  background:linear-gradient(180deg, rgba(74,26,58,0) 0%, #4a1a2a 100%);
+  clip-path: polygon(0 55%, 8% 35%, 18% 58%, 30% 25%, 42% 55%, 55% 20%, 68% 52%, 80% 30%, 92% 58%, 100% 40%, 100% 100%, 0 100%);
+}
+
+.d-timer-pill, .d-score-pill{
+  position:absolute; top:12px; z-index:2; background:#101a33cc; border:1px solid #2a3a63;
+  border-radius:16px; padding:7px 14px; font-weight:800; font-size:.95rem;
+}
+.d-timer-pill{ right:12px; }
+.d-score-pill{ left:12px; font-size:.85rem; }
+
+.d-wordcard{
+  position:absolute; top:64px; left:50%; transform:translateX(-50%); z-index:2;
+  background:#0e152bcc; border:1px solid #2a3a63; border-radius:18px; padding:12px 20px;
+  display:flex; align-items:center; gap:14px; font-size:1.6rem; font-weight:800;
+}
+.d-speak{ background:none; border:none; color:#8fd0ff; font-size:1.2rem; cursor:pointer; }
+
+.d-bubble{
+  position:absolute; transform:translate(-50%,-50%); width:96px; height:96px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; text-align:center; padding:6px;
+  font-weight:800; font-size:.85rem; color:#eaf6ff; cursor:pointer; user-select:none;
+  background:radial-gradient(circle at 32% 28%, #7fb8ff 0%, #2f6fe0 45%, #1a3f9e 100%);
+  box-shadow:0 0 18px 2px rgba(80,140,255,.55), inset 0 0 14px rgba(255,255,255,.25);
+  border:2px solid rgba(160,200,255,.5);
+  transition:background .2s, border-color .2s, box-shadow .2s;
+}
+.d-bubble.d-correct{
+  background:radial-gradient(circle at 32% 28%, #a8ffb0 0%, #2fae4a 45%, #157a2f 100%);
+  box-shadow:0 0 20px 3px rgba(60,220,100,.6), inset 0 0 14px rgba(255,255,255,.25);
+  border-color:rgba(180,255,190,.6);
+}
+.d-bubble.d-wrong{
+  background:radial-gradient(circle at 32% 28%, #ffb0b0 0%, #d63b3b 45%, #7a1515 100%);
+  box-shadow:0 0 20px 3px rgba(255,80,80,.6), inset 0 0 14px rgba(255,255,255,.25);
+  border-color:rgba(255,190,190,.6);
+}
+
+.d-bala{
+  position:absolute; width:9px; height:9px; border-radius:50%; background:#8ff5ff; box-shadow:0 0 10px 3px #8ff5ffcc;
+  transform:translate(-50%,-50%); pointer-events:none; transition:left .16s linear, top .16s linear; z-index:3;
+}
+
+.d-tank{ position:absolute; bottom:6%; left:50%; transform:translateX(-50%); width:130px; height:100px; z-index:2; }
+.d-tank-tracks{ position:absolute; bottom:0; left:6px; right:6px; height:20px; background:#1c2620; border-radius:10px; }
+.d-tank-fender{ position:absolute; bottom:2px; width:34px; height:26px; background:#e0b23c; border:2px solid #b8890f; border-radius:8px; }
+.d-tank-fender-l{ left:0; } .d-tank-fender-r{ right:0; }
+.d-tank-body{
+  position:absolute; bottom:16px; left:18px; right:18px; height:36px; border-radius:14px 14px 6px 6px;
+  background:linear-gradient(160deg, #6fe08a 0%, #3fae54 55%, #227a34 100%); border:2px solid #1e5c2a;
+}
+.d-tank-hatch{ position:absolute; top:6px; left:50%; transform:translateX(-50%); width:22px; height:14px; background:#22321f; border-radius:6px; }
+.d-tank-barrel{
+  position:absolute; bottom:50px; left:50%; width:10px; height:44px;
+  transform-origin:bottom center; transform:translateX(-50%) rotate(0deg); transition:transform .12s ease;
+}
+.d-tank-gun{ position:absolute; inset:0; background:#2c5e33; border-radius:4px; }
+.d-tank-orb{
+  position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:16px; height:16px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #d8fbff 0%, #38e0ff 60%, #1090b8 100%);
+  box-shadow:0 0 12px 3px rgba(80,220,255,.8);
+}
+
+.d-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0; }
+.d-stat{ background:#161b22; border:1px solid #303a4b; border-radius:15px; padding:14px; }
+.d-stat b{ display:block; font-size:22px; margin-top:4px; }
+.d-fallo{ background:#161b22; border:1px solid #303a4b; border-radius:10px; padding:10px; margin:6px 0; text-align:left; font-size:.9rem; }
 
 /* ---- Pantalla completa mientras se está jugando ---- */
 body.dispara-fullscreen header,
 body.dispara-fullscreen .mode-toggle{ display:none; }
 body.dispara-fullscreen #disparaSection{ position:fixed; inset:0; z-index:50; }
-.d-tank{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:64px; height:60px; }
-.d-tank-body{ position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:56px; height:26px; background:#3a7d44; border:2px solid #2a5c32; border-radius:8px 8px 4px 4px; }
-.d-tank-body::before{ content:""; position:absolute; bottom:-6px; left:-4px; right:-4px; height:8px; background:#22321f; border-radius:4px; }
-.d-tank-barrel{
-  position:absolute; bottom:22px; left:50%; width:6px; height:30px; background:#2a5c32; border-radius:3px;
-  transform-origin:bottom center; transform:translateX(-50%) rotate(0deg); transition:transform .12s ease;
-}
-.d-bala{
-  position:absolute; width:8px; height:8px; border-radius:50%; background:#ffdd55; box-shadow:0 0 8px 2px #ffdd55aa;
-  transform:translate(-50%,-50%); pointer-events:none; transition:left .16s linear, top .16s linear;
-}
-.d-bubble{
-  position:absolute; transform:translate(-50%,-50%); padding:8px 14px; border-radius:20px;
-  background:#1c2532; border:1px solid #3a4a63; font-weight:700; cursor:pointer; user-select:none;
-  transition:background .15s, border-color .15s; white-space:nowrap; font-size:.95rem;
-}
-.d-bubble.d-correct{ background:#183c29; border-color:#2ea043; }
-.d-bubble.d-wrong{ background:#4a2020; border-color:#f85149; }
-.d-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0; }
-.d-stat{ background:#161b22; border:1px solid #303a4b; border-radius:15px; padding:14px; }
-.d-stat b{ display:block; font-size:22px; margin-top:4px; }
-.d-fallo{ background:#161b22; border:1px solid #303a4b; border-radius:10px; padding:10px; margin:6px 0; text-align:left; font-size:.9rem; }
 
 /* ---- Responsive: celular (la mayoría de las entradas son desde aquí) ---- */
 @media (max-width: 640px){
@@ -108,8 +175,12 @@ body.dispara-fullscreen #disparaSection{ position:fixed; inset:0; z-index:50; }
   .topic-picker{ font-size:.8rem; }
   .wave-circle{ width:200px; height:200px; }
   .d-wrap{ padding:14px 10px; }
-  .d-hud{ font-size:.85rem; gap:4px 10px; }
-  .d-bubble{ padding:7px 11px; font-size:.85rem; }
+  .d-topbar{ padding:6px 10px; }
+  .d-topbar-title{ font-size:.85rem; }
+  .d-wordcard{ font-size:1.15rem; padding:9px 14px; top:56px; }
+  .d-timer-pill, .d-score-pill{ font-size:.8rem; padding:5px 10px; }
+  .d-bubble{ width:78px; height:78px; font-size:.75rem; }
+  .d-tank{ width:100px; height:80px; }
 }
 
 /* ---- Selector de modo (Clase / Vocabulario) ---- */
