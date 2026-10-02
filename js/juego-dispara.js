@@ -71,6 +71,7 @@
     setupEl.style.display = "none";
     resultEl.style.display = "none";
     gameEl.style.display = "flex";
+    try{ video.currentTime = 0; video.play().catch(()=>{}); }catch(e){}
     actualizarHud();
     timerInterval = setInterval(()=>{
       if (jugPausado) return;
