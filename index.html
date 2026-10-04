@@ -4,32 +4,60 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sala de Estudio Virtual — Inglés</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0f1c">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
 
-<header>
-  <h1>Sala de Estudio Virtual — Inglés</h1>
-  <div class="key-row">
-    <label for="apiKey">Gemini API key:</label>
+<div class="topbar">
+  <div class="topbar-title">Sala de estudio</div>
+  <button id="settingsBtn" class="icon-btn" title="Configuración">⚙️</button>
+</div>
+
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-panel">
+    <div class="settings-panel-title">Configuración</div>
+    <label for="apiKey">Gemini API key</label>
     <input id="apiKey" type="password" placeholder="pega tu key aquí" autocomplete="off">
-    <label for="velocidadSelect">Velocidad:</label>
+    <label for="velocidadSelect">Velocidad de voz</label>
     <select id="velocidadSelect">
       <option value="0.65">🐢 Muy lento</option>
       <option value="0.8" selected>🙂 Lento (recomendado)</option>
       <option value="1">▶ Normal</option>
       <option value="1.15">⏩ Rápido</option>
     </select>
+    <button id="closeSettings" class="settings-close">Cerrar</button>
   </div>
-</header>
-
-<div class="mode-toggle">
-  <button id="modeClase" class="active">🎙️ Clase con profesor</button>
-  <button id="modeVocab">📚 Vocabulario</button>
-  <button id="modeDispara">🎯 Dispara la respuesta</button>
 </div>
 
-<div id="claseWrap">
+<section id="homeHub">
+  <div class="hub-sub">Tema actual: <span id="hubTema">—</span></div>
+  <div class="hub-grid">
+    <button class="hub-card hub-card-wide" data-mode="clase">
+      <div class="hub-icon hub-icon-teal">🎙️</div>
+      <div class="hub-card-text">
+        <div class="hub-card-title">Clase con profesor</div>
+        <div class="hub-card-sub">Voz, pizarra y seguimiento del tema</div>
+      </div>
+      <div class="hub-chevron">›</div>
+    </button>
+    <button class="hub-card" data-mode="vocab">
+      <div class="hub-icon hub-icon-amber">📚</div>
+      <div class="hub-card-title">Vocabulario</div>
+      <div class="hub-card-sub">193 palabras</div>
+    </button>
+    <button class="hub-card" data-mode="dispara">
+      <div class="hub-icon hub-icon-coral">🎯</div>
+      <div class="hub-card-title">Dispara la respuesta</div>
+      <div class="hub-card-sub">Juego con tanque</div>
+    </button>
+  </div>
+</section>
+
+<div id="claseWrap" style="display:none">
+<div class="mode-topbar"><button class="back-btn" data-back>‹ Inicio</button><span class="mode-topbar-title">Clase con profesor</span></div>
 <div class="topic-picker">
   Tema: <select id="topicSelect"></select>
 </div>
@@ -40,7 +68,7 @@
       <div class="wave-circle">
         <canvas id="waveCanvas"></canvas>
       </div>
-      <div class="status-line" id="statusLine">Pega tu API key de Gemini arriba, elige un tema y escribe o habla para comenzar.</div>
+      <div class="status-line" id="statusLine">Pega tu API key de Gemini en ⚙️ Configuración, elige un tema y escribe o habla para comenzar.</div>
     </div>
     <div class="view board-view" id="boardView">
       <canvas id="board"></canvas>
@@ -55,9 +83,9 @@
 </main>
 </div><!-- /claseWrap -->
 
-<section id="vocabSection">
+<section id="vocabSection" style="display:none">
 <div class="vocab-main">
-<h2>🇺🇸 English Trainer — Vocabulario</h2>
+<div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">🇺🇸 Vocabulario</span></div>
 <div class="tabs">
 <button class="active" onclick="tab('cards',this)">🃏 Tarjetas</button>
 <button onclick="tab('quiz',this)">🎯 Quiz</button>
@@ -115,9 +143,9 @@
 </div>
 </section>
 
-<section id="disparaSection">
+<section id="disparaSection" style="display:none">
   <div class="d-wrap" id="dSetup">
-    <h2>🎯 Dispara la respuesta</h2>
+    <div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">🎯 Dispara la respuesta</span></div>
     <p class="small">Aparece una palabra en español y 5 burbujas moviéndose con posibles traducciones. Toca la correcta antes de que se acabe el tiempo.</p>
     <p class="small">Selecciona el tiempo:</p>
     <div class="d-time-opts">
