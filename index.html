@@ -49,12 +49,17 @@
     <button class="hub-card" data-mode="vocab">
       <div class="hub-icon hub-icon-amber">📚</div>
       <div class="hub-card-title">Vocabulario</div>
-      <div class="hub-card-sub">193 palabras</div>
+      <div class="hub-card-sub">295 palabras</div>
     </button>
     <button class="hub-card" data-mode="dispara">
       <div class="hub-icon hub-icon-coral">🎯</div>
       <div class="hub-card-title">Dispara la respuesta</div>
       <div class="hub-card-sub">Juego con tanque</div>
+    </button>
+    <button class="hub-card" data-mode="dlisten">
+      <div class="hub-icon hub-icon-coral">🎧</div>
+      <div class="hub-card-title">Escucha y dispara</div>
+      <div class="hub-card-sub">Solo audio en inglés</div>
     </button>
     <button class="hub-card" data-mode="vb">
       <div class="hub-icon hub-icon-teal">⚔️</div>
@@ -161,7 +166,7 @@
 </div>
 </section>
 
-<section id="disparaSection" style="display:none">
+<section id="disparaSection" class="d-game-section" style="display:none">
   <div class="d-wrap" id="dSetup">
     <div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">🎯 Dispara la respuesta</span></div>
     <p class="small">Aparece una palabra en español y 5 burbujas moviéndose con posibles traducciones. Toca la correcta antes de que se acabe el tiempo.</p>
@@ -196,6 +201,45 @@
     <div id="dResultSummary"></div>
     <div id="dResultList"></div>
     <button id="dPlayAgain" class="primary">🔄 Jugar de nuevo</button>
+  </div>
+</section>
+
+<section id="dlSection" class="d-game-section" style="display:none">
+  <div class="d-wrap" id="dlSetup">
+    <div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">🎧 Escucha y dispara</span></div>
+    <p class="small">Esta vez NO aparece la palabra escrita en español. Solo vas a escuchar la palabra en inglés (puedes repetirla las veces que quieras) y debes disparar a la burbuja correcta. Las palabras nunca se repiten hasta que juegues las 295.</p>
+    <p class="small">Selecciona el tiempo:</p>
+    <div class="d-time-opts">
+      <button class="d-time active" data-t="180">⏱ 3 minutos</button>
+      <button class="d-time" data-t="300">⏱ 5 minutos</button>
+    </div>
+    <button id="dlStart" class="primary">▶ Comenzar</button>
+    <p class="small" id="dlCicloInfo"></p>
+  </div>
+
+  <div class="d-wrap d-game" id="dlGame" style="display:none">
+    <div class="d-topbar">
+      <button id="dlExit" class="d-icon-btn" title="Salir">‹</button>
+      <div class="d-topbar-title">🎧 Escucha y dispara</div>
+      <button id="dlPauseBtn" class="d-icon-btn" title="Pausar">⏸</button>
+    </div>
+    <div class="d-arena" id="dlArena">
+      <video class="d-bg-video" autoplay muted loop playsinline preload="auto" src="assets/tanque-fondo.mp4"></video>
+      <div class="d-timer-pill">⏱ <span id="dlTimer">03:00</span></div>
+      <div class="d-score-pill"><span id="dlScoreLine">✅ 0 ❌ 0</span></div>
+      <div style="position:absolute; top:60px; left:50%; transform:translateX(-50%); z-index:2; display:flex; flex-direction:column; align-items:center;">
+        <button class="d-listen-btn" id="dlSpeak" title="Escuchar">🔊</button>
+        <div class="d-listen-hint">Toca para escuchar<br>(las veces que quieras)</div>
+      </div>
+      <div class="d-answers" id="dlAnswers"></div>
+    </div>
+  </div>
+
+  <div class="d-wrap" id="dlResult" style="display:none">
+    <h2>🏆 Resultado</h2>
+    <div id="dlResultSummary"></div>
+    <div id="dlResultList"></div>
+    <button id="dlPlayAgain" class="primary">🔄 Jugar de nuevo</button>
   </div>
 </section>
 
@@ -321,6 +365,7 @@
 <script src="js/clase.js"></script>
 <script src="js/vocabulario.js"></script>
 <script src="js/juego-dispara.js"></script>
+<script src="js/juego-escucha-dispara.js"></script>
 <script src="js/juego-vocabulary-battle.js"></script>
 <script src="js/juego-english-match.js"></script>
 <script src="js/juego-street-quest.js"></script>
