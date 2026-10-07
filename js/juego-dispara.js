@@ -12,9 +12,9 @@
   const video = arena.querySelector(".d-bg-video");
 
   let tiempoElegido = 180;
-  document.querySelectorAll(".d-time").forEach(b=>{
+  setupEl.querySelectorAll(".d-time").forEach(b=>{
     b.onclick = ()=>{
-      document.querySelectorAll(".d-time").forEach(x=>x.classList.remove("active"));
+      setupEl.querySelectorAll(".d-time").forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
       tiempoElegido = parseInt(b.dataset.t, 10);
     };
