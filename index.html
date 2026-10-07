@@ -8,6 +8,9 @@
 <meta name="theme-color" content="#0b0f1c">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="stylesheet" href="css/estilos.css">
+<link rel="stylesheet" href="css/juego-vocabulary-battle.css">
+<link rel="stylesheet" href="css/juego-english-match.css">
+<link rel="stylesheet" href="css/juego-street-quest.css">
 </head>
 <body>
 
@@ -52,6 +55,21 @@
       <div class="hub-icon hub-icon-coral">🎯</div>
       <div class="hub-card-title">Dispara la respuesta</div>
       <div class="hub-card-sub">Juego con tanque</div>
+    </button>
+    <button class="hub-card" data-mode="vb">
+      <div class="hub-icon hub-icon-teal">⚔️</div>
+      <div class="hub-card-title">Vocabulary Battle</div>
+      <div class="hub-card-sub">180 palabras, por ciclos</div>
+    </button>
+    <button class="hub-card" data-mode="em">
+      <div class="hub-icon hub-icon-amber">🧠</div>
+      <div class="hub-card-title">English Match</div>
+      <div class="hub-card-sub">Juego de memoria</div>
+    </button>
+    <button class="hub-card" data-mode="esq">
+      <div class="hub-icon hub-icon-coral">🗺️</div>
+      <div class="hub-card-title">Street Quest</div>
+      <div class="hub-card-sub">Arma la palabra con letras</div>
     </button>
   </div>
 </section>
@@ -181,9 +199,131 @@
   </div>
 </section>
 
+<section id="vbSection" style="display:none">
+<div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">⚔️ Vocabulary Battle</span></div>
+<div class="vb-wrap">
+<div class="brand">⚔️ Vocabulary <span>Battle</span></div>
+<section class="card"><b>Tu progreso</b>
+<div class="line"><span class="barlabel">Palabras presentadas en el ciclo</span><b id="pText">0 / 180</b></div><div class="track"><div id="pBar" class="fill"></div></div>
+<div class="line"><span class="barlabel">Palabras dominadas</span><b id="mText">0 / 180</b></div><div class="track"><div id="mBar" class="fill"></div></div>
+<div class="line"><span class="barlabel">Sesión</span><b id="sText">0 / 20</b></div><div class="track"><div id="sBar" class="fill"></div></div>
+<div class="stats" style="margin-top:12px"><div><b id="left">180</b><span class="muted small">Sin presentar</span></div><div><b id="errs">0</b><span class="muted small">Errores sesión</span></div><div><b id="cycle">1</b><span class="muted small">Ciclo</span></div></div></section>
+<section class="card" id="setup"><h3>Prepara tu sesión</h3><p class="muted">Las palabras salen mezcladas. El progreso se guarda en este navegador para continuar otro día.</p><label for="size">Preguntas por sesión: </label><select id="size"><option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="all">Todas las restantes</option></select> <button class="primary" id="start">Comenzar / continuar</button><p class="notice">Si fallas, la opción queda roja y puedes volver a intentar. La palabra cuenta como presentada desde la primera aparición; solo queda dominada al responder correctamente.</p><p id="resume" class="muted small"></p></section>
+<section class="card hidden" id="game"><div class="line"><span id="counter">Pregunta 1</span><button id="audio" aria-label="Escuchar">🔊</button></div><div class="word" id="word">Window</div><p class="center muted">Elige la traducción correcta</p><div class="answers" id="answers"></div><p class="center" id="feedback" aria-live="polite"></p><div class="center"><button id="quit">Guardar y salir</button> <button class="primary hidden" id="next">Siguiente →</button></div></section>
+<section class="card hidden" id="done"><h2 id="doneTitle">¡Sesión completada!</h2><p id="doneMsg" class="muted"></p><div class="stats"><div><b id="correct">0</b><span>Correctas</span></div><div><b id="errors">0</b><span>Errores</span></div><div><b id="asked">0</b><span>Preguntas</span></div></div><p class="center"><button class="primary" id="again">Otra sesión</button></p></section>
+<section class="card"><h3>Reglas del juego</h3><p class="muted small">Al completar las 180 palabras, podrás empezar un nuevo ciclo. Las palabras que fallaste quedan identificadas como pendientes de dominar. El progreso local puede perderse si borras los datos del navegador o cambias de dispositivo.</p><button id="reset">Reiniciar todo el progreso</button></section>
+</div>
+</section>
+
+<section id="emSection" style="display:none">
+<div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">🧠 English Match</span></div>
+<div class="wrap">
+<header class="top">
+  <div class="brand"><div class="logo">🧠</div><div><h1>English Match</h1><p class="sub">Memoria, vocabulario y pronunciación</p></div></div>
+  <div class="pill">🇬🇧 Inglés de la vida real</div>
+</header>
+<section class="hero"><h2>¡Encuentra las parejas!</h2><p>Une cada palabra en inglés con su significado en español. Cuando descubras una palabra en inglés, podrás escuchar cómo se pronuncia.</p></section>
+<div class="stats">
+ <div class="stat"><small>Parejas encontradas</small><strong id="pairsStat">0 / 6</strong></div>
+ <div class="stat"><small>Intentos</small><strong id="triesStat">0</strong></div>
+ <div class="stat"><small>Récord personal</small><strong id="recordStat">0</strong></div>
+</div>
+<section class="panel" id="setup">
+ <div class="settings">
+  <div class="field"><label for="category">Tema de vocabulario</label><select id="category"><option value="mixed">Mezclado — vida cotidiana</option><option value="home">En casa</option><option value="food">Comida y bebidas</option><option value="shopping">Compras y calle</option><option value="conversation">Conversación cotidiana</option><option value="actions">Acciones diarias</option><option value="work">Trabajo y herramientas</option></select></div>
+  <div class="field"><label for="pairs">Cantidad de parejas</label><select id="pairs"><option value="6">6 parejas (fácil)</option><option value="8">8 parejas (medio)</option><option value="10">10 parejas (difícil)</option></select></div>
+  <button class="primary" id="startBtn">▶ Empezar a jugar</button>
+ </div>
+ <p class="help">Consejo: empieza con 6 parejas. Las tarjetas se mezclan en cada partida. Si una pareja no coincide, se vuelven a ocultar.</p>
+</section>
+<section class="panel hide" id="game">
+ <div class="gamehead"><div><strong id="roundLabel">Partida</strong><div class="sub" id="topicLabel"></div></div><button class="secondary" id="restartBtn">↻ Nueva partida</button></div>
+ <div class="progress"><div id="bar"></div></div>
+ <div class="board" id="board" aria-label="Tarjetas de memoria"></div>
+ <div class="feedback" id="feedback" aria-live="polite">Toca una tarjeta para descubrirla.</div>
+ <div class="toolbar"><button class="secondary" id="hearBtn">🔊 Escuchar palabra en inglés</button><button class="secondary" id="hintBtn">💡 Dar una pista</button><button class="secondary" id="quitBtn">← Cambiar tema</button></div>
+ <div class="help">La pronunciación usa la voz en inglés disponible en tu navegador o dispositivo. La voz puede variar según el celular o computador.</div>
+</section>
+<section class="panel hide" id="finish">
+ <div class="end"><div class="big">🎉</div><h2>¡Muy bien!</h2><p id="resultText">Has encontrado todas las parejas.</p><p id="resultDetail" class="sub"></p><button class="primary" id="againBtn">Jugar otra vez</button></div>
+</section>
+<div class="foot">English Match · Juego educativo independiente · El progreso de récord se guarda en este navegador.</div>
+</div>
+</section>
+
+<section id="esqSection" style="display:none">
+<div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">🗺️ English Street Quest</span></div>
+<div class="wrap">
+<header class="top">
+  <div class="kicker">Inglés para la vida real</div>
+  <h1>🗺️ English Street Quest</h1>
+  <p>Practica palabras y frases que puedes escuchar en la calle, en tiendas, supermercados, viajes y conversaciones cotidianas. Escucha la pronunciación y completa la respuesta en inglés.</p>
+</header>
+<section class="panel" id="setup">
+  <div class="controls">
+    <label for="category">Tema:</label>
+    <select id="category">
+      <option value="all">Todos los temas</option>
+      <option value="street">Calle y transporte</option>
+      <option value="shops">Tiendas y supermercado</option>
+      <option value="things">Objetos y juguetes</option>
+      <option value="people">Personas y conversación</option>
+      <option value="actions">Acciones e instrucciones</option>
+      <option value="feelings">Sensaciones, clima y salud</option>
+      <option value="food">Comidas preparadas</option>
+      <option value="affection">Afecto y cumplidos</option>
+    </select>
+    <label for="roundSize">Preguntas:</label>
+    <select id="roundSize"><option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="all">Todas las del tema</option></select>
+    <button class="primary" id="startBtn">¡Empezar!</button>
+  </div>
+  <div class="muted" style="margin-top:10px">Consejo: toca las letras en orden. Si te equivocas, puedes borrar y volver a intentarlo. Los acentos y espacios de las frases se manejan automáticamente.</div>
+</section>
+<section class="panel hidden" id="game">
+  <div class="controls" style="justify-content:space-between">
+    <span class="categoryTag" id="tag">Calle y transporte</span>
+    <button id="quitBtn" class="soft">Salir al menú</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><small>Pregunta</small><strong id="count">1 / 15</strong></div>
+    <div class="stat"><small>Puntos</small><strong id="score">0</strong></div>
+    <div class="stat"><small>Racha</small><strong id="streak">0 🔥</strong></div>
+  </div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <div style="margin-top:18px" class="question">
+    <div class="emoji" id="emoji">🛣️</div>
+    <div class="clue">
+      <div class="label">¿Cómo se dice en inglés?</div>
+      <h2 id="spanish">Carretera</h2>
+      <p id="hint">Escucha y completa la palabra.</p>
+    </div>
+  </div>
+  <div class="actions" style="margin-top:12px"><button id="speakBtn" class="teal">🔊 Escuchar inglés</button><button id="hintBtn" class="soft">💡 Pista</button><button id="clearBtn" class="soft">↩ Borrar</button></div>
+  <div class="word" id="slots" aria-label="Letras elegidas"></div>
+  <div class="tiles" id="tiles" aria-label="Letras disponibles"></div>
+  <div class="feedback" id="feedback" aria-live="polite"></div>
+  <div class="actions"><button id="checkBtn" class="primary">Comprobar</button><button id="nextBtn" class="teal hidden">Siguiente ➜</button></div>
+</section>
+<section class="panel hidden end" id="results">
+  <div class="big">🎉</div><h2>¡Ronda terminada!</h2>
+  <p id="summary"></p>
+  <div class="stats">
+    <div class="stat"><small>Respuestas correctas</small><strong id="finalCorrect">0</strong></div>
+    <div class="stat"><small>Puntos</small><strong id="finalScore">0</strong></div>
+  </div>
+  <p id="review" class="muted"></p>
+  <div class="actions"><button class="primary" id="againBtn">Jugar otra vez</button><button class="soft" id="menuBtn">Cambiar tema</button></div>
+</section>
+<div class="footer">La pronunciación usa la voz inglesa disponible en tu navegador.</div>
+</div>
+</section>
+
 <script src="js/clase.js"></script>
 <script src="js/vocabulario.js"></script>
 <script src="js/juego-dispara.js"></script>
+<script src="js/juego-vocabulary-battle.js"></script>
+<script src="js/juego-english-match.js"></script>
+<script src="js/juego-street-quest.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
