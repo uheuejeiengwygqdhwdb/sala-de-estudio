@@ -1,0 +1,31 @@
+#vbSection{ display:none; background:#0b1020; color:#f7f8fc; font-family:system-ui,-apple-system,Segoe UI,sans-serif; flex:1; overflow:auto; }
+#vbSection *{box-sizing:border-box}
+#vbSection .vb-wrap{max-width:760px;margin:auto;padding:16px}
+#vbSection .card{background:#141f35;border:1px solid #30415f;border-radius:20px;padding:18px;margin:12px 0}
+#vbSection .brand{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:900}
+#vbSection .brand span{color:#ffc857}
+#vbSection .muted{color:#aab6cc}
+#vbSection .line{display:flex;justify-content:space-between;gap:10px;margin:13px 0 6px}
+#vbSection .track{height:9px;background:#2b3851;border-radius:20px;overflow:hidden}
+#vbSection .fill{height:100%;background:linear-gradient(90deg,#4e91ff,#25c982);width:0}
+#vbSection button,#vbSection select{background:#202f4b;color:white;border:1px solid #3c5072;border-radius:12px;padding:12px;font:inherit;cursor:pointer}
+#vbSection button:disabled{opacity:.55}
+#vbSection .primary{background:#2563eb;border:0;font-weight:800}
+#vbSection .answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#vbSection .answer{text-align:left;min-height:58px}
+#vbSection .right{background:#0d513e!important;border-color:#25c982!important}
+#vbSection .wrong{background:#642833!important;border-color:#ff5d68!important}
+#vbSection .word{font-size:clamp(2rem,9vw,3.2rem);font-weight:900;text-align:center;margin:22px 0 10px}
+#vbSection .center{text-align:center}
+#vbSection .hidden{display:none!important}
+#vbSection .stats{display:flex;gap:10px;justify-content:space-around;text-align:center}
+#vbSection .stats b{display:block;font-size:1.3rem}
+#vbSection .small{font-size:.88rem}
+#vbSection .barlabel{font-size:.9rem}
+#vbSection .notice{background:#ffc85712;border-left:3px solid #ffc857;padding:10px;border-radius:8px;color:#dbe4f5;font-size:.9rem;line-height:1.45}
+@media(max-width:520px){
+  #vbSection .answers{grid-template-columns:1fr}
+  #vbSection .card{padding:14px}
+  #vbSection .stats{gap:4px}
+  #vbSection .stats span{font-size:.75rem}
+}
