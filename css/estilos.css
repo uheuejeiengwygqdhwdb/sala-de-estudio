@@ -116,8 +116,8 @@ canvas{ width:100%; height:100%; display:block; }
 #claseWrap{ display:flex; flex-direction:column; flex:1; min-height:0; }
 
 /* ---- Juego: Dispara la respuesta ---- */
-#disparaSection{ display:none; flex:1; min-height:0; overflow:auto; background:#0d1117; color:#e6edf3; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
-#disparaSection *{ box-sizing:border-box; }
+.d-game-section{ display:none; flex:1; min-height:0; overflow:auto; background:#0d1117; color:#e6edf3; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+.d-game-section *{ box-sizing:border-box; }
 .d-wrap{ max-width:720px; margin:0 auto; padding:20px 16px; text-align:center; }
 .d-wrap h2{ margin:0 0 10px; }
 .d-wrap .small{ color:#9da7b3; font-size:.85rem; margin:6px 0; }
@@ -199,7 +199,15 @@ canvas{ width:100%; height:100%; display:block; }
 
 /* ---- Pantalla completa mientras se está jugando ---- */
 body.dispara-fullscreen .topbar{ display:none; }
-body.dispara-fullscreen #disparaSection{ position:fixed; inset:0; z-index:50; }
+body.dispara-fullscreen .d-game-section{ position:fixed; inset:0; z-index:50; }
+
+/* ---- Juego de escucha: solo el parlante, sin texto en español ---- */
+.d-listen-btn{
+  width:84px; height:84px; border-radius:50%; background:#101a33cc; border:2px solid #2a3a63;
+  font-size:2.2rem; cursor:pointer; color:#8fd0ff; box-shadow:0 0 20px rgba(80,140,255,.35);
+}
+.d-listen-btn:active{ transform:scale(.96); }
+.d-listen-hint{ color:#9aa3c2; font-size:.8rem; margin-top:8px; text-align:center; }
 
 /* ---- Responsive: celular (la mayoría de las entradas son desde aquí) ---- */
 @media (max-width: 640px){
