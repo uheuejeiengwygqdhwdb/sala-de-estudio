@@ -6,6 +6,7 @@ const vistas = {
   vocab:   { el: document.getElementById("vocabSection"),   modo: "flex"  },
   dispara: { el: document.getElementById("disparaSection"), modo: "flex"  },
   dlisten: { el: document.getElementById("dlSection"),       modo: "flex"  },
+  lb:      { el: document.getElementById("lbSection"),       modo: "flex"  },
   vb:      { el: document.getElementById("vbSection"),      modo: "flex"  },
   em:      { el: document.getElementById("emSection"),      modo: "flex"  },
   esq:     { el: document.getElementById("esqSection"),     modo: "flex"  }
