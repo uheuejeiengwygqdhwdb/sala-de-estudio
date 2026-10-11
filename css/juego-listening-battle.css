@@ -1,0 +1,45 @@
+#lbSection{
+  --lb-panel:#111827; --lb-panel2:#0d1420; --lb-line:#26344a; --lb-txt:#f5f7fb; --lb-muted:#9aa8bc;
+  --lb-a:#5eead4; --lb-b:#60a5fa; --lb-good:#34d399; --lb-bad:#fb7185;
+  display:none; flex:1; overflow:auto;
+  background:radial-gradient(circle at top,#17243a,#070a10 55%); color:var(--lb-txt);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+#lbSection *{box-sizing:border-box}
+#lbSection .wrap{width:100%;max-width:760px;margin:0 auto;padding:16px 12px 30px}
+#lbSection h1{text-align:center;font-size:30px;margin:8px 0}
+#lbSection .sub{text-align:center;color:var(--lb-muted);font-size:14px;line-height:1.45}
+#lbSection .card{margin-top:16px;background:rgba(17,24,39,.96);border:1px solid var(--lb-line);border-radius:22px;padding:16px;box-shadow:0 18px 45px #0008}
+#lbSection button,#lbSection select{font:inherit}
+#lbSection .start{text-align:center}
+#lbSection .start p{color:var(--lb-muted)}
+#lbSection select{width:100%;padding:13px;border-radius:13px;background:var(--lb-panel2);color:var(--lb-txt);border:1px solid var(--lb-line);margin:12px 0}
+#lbSection .primary{width:100%;padding:15px;border:0;border-radius:15px;background:linear-gradient(135deg,var(--lb-b),var(--lb-a));color:#061018;font-weight:900;cursor:pointer}
+#lbSection .top{display:flex;gap:8px;justify-content:space-between}
+#lbSection .stat{flex:1;text-align:center;background:var(--lb-panel2);border:1px solid var(--lb-line);border-radius:13px;padding:8px}
+#lbSection .stat b{display:block;font-size:18px}
+#lbSection .stat small{color:var(--lb-muted)}
+#lbSection .bar{height:8px;background:#080d16;border-radius:20px;overflow:hidden;margin:13px 0 18px}
+#lbSection .bar div{height:100%;background:linear-gradient(90deg,var(--lb-a),var(--lb-b));width:0}
+#lbSection .listen{text-align:center}
+#lbSection .listen p{color:var(--lb-muted);margin:4px 0 10px}
+#lbSection .listen button{width:100%;max-width:320px;padding:17px 20px;border:0;border-radius:17px;background:linear-gradient(135deg,var(--lb-b),var(--lb-a));color:#061018;font-size:19px;font-weight:900;cursor:pointer}
+#lbSection .listen .hint{font-size:12px;color:#718096;margin:9px 0 18px}
+#lbSection .options{display:grid;gap:10px}
+#lbSection .opt{padding:14px;border-radius:15px;border:1px solid var(--lb-line);background:#152033;color:var(--lb-txt);text-align:left;cursor:pointer;line-height:1.35}
+#lbSection .opt:hover{background:#1b2a42}
+#lbSection .letter{display:inline-flex;width:30px;height:30px;border-radius:9px;background:#0b1320;color:var(--lb-a);align-items:center;justify-content:center;font-weight:900;margin-right:8px}
+#lbSection .correct{border-color:var(--lb-good)!important;background:#34d3991c!important}
+#lbSection .wrong{border-color:var(--lb-bad)!important;background:#fb71851c!important}
+#lbSection .feedback{margin-top:12px;min-height:55px;padding:12px;border:1px solid var(--lb-line);border-radius:14px;background:var(--lb-panel2);font-size:14px}
+#lbSection .feedback small{display:block;color:var(--lb-muted);margin-top:5px}
+#lbSection .next{width:100%;margin-top:11px;padding:14px;border:0;border-radius:14px;background:#263750;color:white;font-weight:900;cursor:pointer}
+#lbSection .hidden{display:none}
+#lbSection .result{text-align:center}
+#lbSection .big{font-size:54px;font-weight:950}
+#lbSection .muted{color:var(--lb-muted)}
+@media(max-width:430px){
+  #lbSection .wrap{padding:10px}
+  #lbSection .card{border-radius:19px;padding:14px}
+  #lbSection .opt{font-size:15px}
+}
