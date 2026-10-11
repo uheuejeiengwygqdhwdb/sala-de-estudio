@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="css/juego-vocabulary-battle.css">
 <link rel="stylesheet" href="css/juego-english-match.css">
 <link rel="stylesheet" href="css/juego-street-quest.css">
+<link rel="stylesheet" href="css/juego-listening-battle.css">
 </head>
 <body>
 
@@ -60,6 +61,11 @@
       <div class="hub-icon hub-icon-coral">🎧</div>
       <div class="hub-card-title">Escucha y dispara</div>
       <div class="hub-card-sub">Solo audio en inglés</div>
+    </button>
+    <button class="hub-card" data-mode="lb">
+      <div class="hub-icon hub-icon-teal">🎧</div>
+      <div class="hub-card-title">Listening Battle</div>
+      <div class="hub-card-sub">Escucha y elige la frase</div>
     </button>
     <button class="hub-card" data-mode="vb">
       <div class="hub-icon hub-icon-teal">⚔️</div>
@@ -243,6 +249,31 @@
   </div>
 </section>
 
+<section id="lbSection" style="display:none">
+<div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">🎧 Listening Battle</span></div>
+<div class="wrap">
+<h1>🎧 Listening Battle</h1>
+<div class="sub">Escucha la frase en inglés y elige exactamente lo que escuchaste.</div>
+
+<section id="start" class="card start">
+<h2>🇺🇸 Escucha y elige</h2>
+<p>La frase objetivo <b>NO aparece escrita arriba</b>. Solo escucharás el audio. Puedes repetirlo todas las veces que necesites.</p>
+<select id="size"><option value="10">10 preguntas</option><option value="20">20 preguntas</option><option value="30">30 preguntas</option><option value="all">Todas</option></select>
+<button class="primary" id="startBtn">▶️ Comenzar</button>
+</section>
+
+<section id="game" class="card hidden">
+<div class="top"><div class="stat"><b id="num">1</b><small>Pregunta</small></div><div class="stat"><b id="score">0</b><small>Aciertos</small></div><div class="stat"><b id="streak">0</b><small>Racha</small></div></div>
+<div class="bar"><div id="bar"></div></div>
+<div class="listen"><p>Escucha la frase 👇</p><button id="speakBtn">🔊 Escuchar frase</button><div class="hint">Tócala otra vez cuando quieras.</div></div>
+<div id="opts" class="options"></div><div id="fb" class="feedback">Selecciona A, B, C o D.</div>
+<button id="next" class="next hidden">Siguiente pregunta →</button>
+</section>
+
+<section id="result" class="card result hidden"><h2>🏁 Terminado</h2><div id="pct" class="big">0%</div><p id="summary" class="muted"></p><button class="primary" id="againBtn">🔄 Jugar otra vez</button></section>
+</div>
+</section>
+
 <section id="vbSection" style="display:none">
 <div class="mode-topbar mode-topbar-dark"><button class="back-btn back-btn-dark" data-back>‹ Inicio</button><span class="mode-topbar-title">⚔️ Vocabulary Battle</span></div>
 <div class="vb-wrap">
@@ -366,6 +397,7 @@
 <script src="js/vocabulario.js"></script>
 <script src="js/juego-dispara.js"></script>
 <script src="js/juego-escucha-dispara.js"></script>
+<script src="js/juego-listening-battle.js"></script>
 <script src="js/juego-vocabulary-battle.js"></script>
 <script src="js/juego-english-match.js"></script>
 <script src="js/juego-street-quest.js"></script>
