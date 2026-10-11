@@ -7,6 +7,7 @@ const vistas = {
   dispara: { el: document.getElementById("disparaSection"), modo: "flex"  },
   dlisten: { el: document.getElementById("dlSection"),       modo: "flex"  },
   lb:      { el: document.getElementById("lbSection"),       modo: "flex"  },
+  lw:      { el: document.getElementById("lwSection"),       modo: "flex"  },
   vb:      { el: document.getElementById("vbSection"),      modo: "flex"  },
   em:      { el: document.getElementById("emSection"),      modo: "flex"  },
   esq:     { el: document.getElementById("esqSection"),     modo: "flex"  }
